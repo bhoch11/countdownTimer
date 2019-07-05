@@ -1,4 +1,3 @@
-
 #import modules
 import time
 import sys
@@ -35,50 +34,20 @@ def chooseSeconds():
 
 #begins countdown, loops through minutes and seconds, overwriting original value.
 def countdown(minute, seconds):
-        print('beginning countdown')
-        if minute > 0 and seconds == 0:  ## working
-                sys.stdout.write("\r" + str(minute)+':0'+str(seconds))
+        if minute == 0 and seconds == 0:
+                sys.stdout.write("\r" + '{:02d}:{:02d}'.format(minute, seconds))
+                return 0
+        elif seconds ==0:
+                sys.stdout.write("\r" + '{:02d}:{:02d}'.format(minute, seconds))
                 sys.stdout.flush()
                 time.sleep(1)
-                minute = minute - 1
-                seconds = 59
-                for num in range(0, minute + 1):
-                        for num in range(0, 60):
-                                if seconds >= 10:
-                                        sys.stdout.write("\r" + str(minute) +':'+str(seconds))
-                                        sys.stdout.flush()
-                                else:
-                                        sys.stdout.write("\r" + str(minute)+':0'+str(seconds))
-                                        sys.stdout.flush()
-                                seconds = seconds - 1
-                                time.sleep(1)
-                        minute = minute - 1
-                        seconds = 59
-
-        elif minute > 0 and seconds > 0:
-                for num in range(0, minute + 1):
-                        for num in range(0 , seconds + 1):
-                                if seconds >= 10:
-                                        sys.stdout.write("\r" + str(minute)+':'+str(seconds))
-                                        sys.stdout.flush()
-                                else:
-                                        sys.stdout.write("\r" + str(minute)+':0'+str(seconds))
-                                        sys.stdout.flush()
-                                seconds -= 1
-                                time.sleep(1)
-                        minute = minute - 1
-                        seconds = 59
-
-        else:                           ## working
-                for num in range(0, seconds + 1):
-                        if seconds >= 10:
-                                sys.stdout.write("\r" + str(minute)+':'+str(seconds))
-                                sys.stdout.flush()
-                        else:
-                                sys.stdout.write("\r" + str(minute)+':0'+str(seconds))
-                                sys.stdout.flush()
-                        seconds = seconds - 1
-                        time.sleep(1)
+                seconds = 60
+                countdown(minute - 1, seconds -1)
+        else:
+                sys.stdout.write("\r" + '{:02d}:{:02d}'.format(minute, seconds))
+        sys.stdout.flush()
+        time.sleep(1)
+        countdown(minute, seconds - 1)
 
 
 #running the program.
@@ -88,4 +57,5 @@ chooseMinute()
 print('Please enter a value for Seconds')
 chooseSeconds()
 
+print('beginning countdown')
 countdown(minute, seconds)
