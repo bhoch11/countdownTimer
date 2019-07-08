@@ -46,7 +46,7 @@ def countdown():
                 seconds = 0
     if minute > 0:
         timeLeft.config(background = 'white', foreground = 'black')
-    elif:
+    else:
         timeLeft.config(background = 'red', foreground = 'white')
     time2 = '{:02d}:{:02d}'.format(minute, seconds)
     if time2 != time1:
