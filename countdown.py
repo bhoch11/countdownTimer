@@ -1,61 +1,125 @@
 #import modules
 import time
 import sys
+from tkinter import *
+from tkinter import ttk
 
-# Function for obtaining a minute value and validating it.
-def chooseMinute():
-        global minute
-        try:
-            minute = int(input())
-        except ValueError:
-            print('That is not a valid integer, try again')
-            chooseMinute()
-        if minute > -1:
-            return minute
-        else:
-            print('Please enter a non-negative integer')
-            chooseMinute()
+HEIGHT = 1024
+WIDTH = 1500
 
-# Function for obtaining a seconds value and validating it.
-def chooseSeconds():
-        global seconds
-        try:
-            seconds = int(input())
-        except ValueError:
-            print('That is not a valid integer, try again')
-            chooseSeconds()
-        if seconds > -1 and seconds < 60:
-            return seconds
-        else:
-            print('Please enter a value between 0 and 59')
-            chooseSeconds()
+root = Tk()
+
+canvas = Canvas(root, height = HEIGHT, width=WIDTH)
+canvas.pack()
+
+time1 = ''
+prevSec = ''
+minute = 0
+seconds = 0
+running = False
+startTime = 0
+
+
+top_frame = Frame(root)
+top_frame.place(rely = 0.0, relwidth = 1, relheight = 0.9)
+timeLeft = ttk.Label(top_frame, text = str(minute) + ':' + str(seconds) , foreground = 'black', background = 'white', anchor = CENTER, font = ('Arial', 400))
+timeLeft.pack(fill = BOTH, expand = True)
 
 
 
 #begins countdown, loops through minutes and seconds, overwriting original value.
-def countdown(minute, seconds):
-        if minute == 0 and seconds == 0:
-                sys.stdout.write("\r" + '{:02d}:{:02d}'.format(minute, seconds))
-                return 0
-        elif seconds ==0:
-                sys.stdout.write("\r" + '{:02d}:{:02d}'.format(minute, seconds))
-                sys.stdout.flush()
-                time.sleep(1)
-                seconds = 60
-                countdown(minute - 1, seconds -1)
-        else:
-                sys.stdout.write("\r" + '{:02d}:{:02d}'.format(minute, seconds))
-        sys.stdout.flush()
-        time.sleep(1)
-        countdown(minute, seconds - 1)
+def countdown():
+    global minute, seconds, running, prevSec, time1
+    if running:
+        newSec = time.strftime('%S')
+    else:
+        newSec = ''
+        prevSec = ''
+    if newSec != prevSec:
+        prevSec = newSec
+        seconds -= 1
+        if seconds < 0:
+            seconds = 59
+            minute -= 1
+            if minute < 0:
+                minute = 0
+                seconds = 0
+    if minute > 0:
+        timeLeft.config(background = 'white', foreground = 'black')
+    elif:
+        timeLeft.config(background = 'red', foreground = 'white')
+    time2 = '{:02d}:{:02d}'.format(minute, seconds)
+    if time2 != time1:
+        time1 = time2
+        timeLeft.config(text= time2)
+
+    timeLeft.after(200, countdown)
+
+countdown()
+
+# setting time based on user input
+
+def setTimer(entryMinute):
+    global minute, startTime
+    minute = int(entryMinute)
+    startTime = int(entryMinute)
+    seconds = 0
+    print('This is the entry: ',entryMinute)
+    timeLeft['text'] = '{:02d}:{:02d}'.format(minute, seconds)
+    startButton.config(state='normal')
+    return minute
 
 
-#running the program.
-print('Please enter a value for Minutes')
-chooseMinute()
+def startTime():    # starting clock
+    global running, minute
+    running = True
+    startButton.config(state='disabled')
+    stopButton.config(state='normal')
+    submitButton.config(state='disabled')
 
-print('Please enter a value for Seconds')
-chooseSeconds()
 
-print('beginning countdown')
-countdown(minute, seconds)
+def stopTime():     #stopping clock
+    global running
+    running = False
+    startButton.config(state = 'normal')
+    stopButton.config(state = 'disabled')
+    resetButton.config(state = 'normal')
+    submitButton.config(state = 'normal')
+
+def resetTime():    #resetting clock
+    global minute, seconds, time1, prevSec, running, startTime
+    minute = startTime
+    seconds = 0
+    prevSec = ''
+    running = False
+    time1 = '{:02d}:{:02d}'.format(minute, seconds)
+    timeLeft.config(text = time1)
+
+# Define the rest of the GUI
+
+bottom_frame = Frame(root)
+bottom_frame.place(relx = 0.5, rely = 0.98, anchor = 's' )
+
+ttk.Label(bottom_frame, text = '# of Minutes').grid(row = 0, column = 0, columnspan = 2)
+
+entryMinute = ttk.Entry(bottom_frame, width = 10)
+entryMinute.grid(row = 0, column = 2)
+
+submitButton = ttk.Button(bottom_frame, text = 'Set Time', command = lambda: setTimer(entryMinute.get()))
+submitButton.grid(row=0, column = 3)
+
+startButton = ttk.Button(bottom_frame, text= 'Start', command = startTime)
+startButton.grid(row =1, column = 1)
+startButton.config(state = 'disabled')
+
+stopButton = ttk.Button(bottom_frame, text = 'Stop', command = stopTime)
+stopButton.grid(row =1, column = 2)
+stopButton.config(state = 'disabled')
+
+resetButton = ttk.Button(bottom_frame, text = 'Reset', command = resetTime)
+resetButton.grid(row =1, column = 3)
+resetButton.config(state = 'disabled')
+
+root.mainloop()
+
+
