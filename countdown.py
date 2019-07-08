@@ -8,6 +8,7 @@ HEIGHT = 1024
 WIDTH = 1500
 
 root = Tk()
+root.title('Countdown Timer')
 
 canvas = Canvas(root, height = HEIGHT, width=WIDTH)
 canvas.pack()
@@ -44,6 +45,10 @@ def countdown():
             if minute < 0:
                 minute = 0
                 seconds = 0
+                resetButton.config(state = 'normal')
+                startButton.config(state = 'normal')
+                stopButton.config(state = 'disabled')
+                submitButton.config(state = 'normal')
     if minute > 0:
         timeLeft.config(background = 'white', foreground = 'black')
     else:
@@ -60,12 +65,14 @@ countdown()
 # setting time based on user input
 
 def setTimer(entryMinute):
-    global minute, startTime
+    global minute, startTime, time1, seconds, prevSec
     minute = int(entryMinute)
     startTime = int(entryMinute)
     seconds = 0
-    print('This is the entry: ',entryMinute)
-    timeLeft['text'] = '{:02d}:{:02d}'.format(minute, seconds)
+    prevSec = 0
+    running = False
+    time1 = '{:02d}:{:02d}'.format(minute, seconds)
+    timeLeft.config(text = time1)
     startButton.config(state='normal')
     return minute
 
@@ -76,6 +83,7 @@ def startTime():    # starting clock
     startButton.config(state='disabled')
     stopButton.config(state='normal')
     submitButton.config(state='disabled')
+    resetButton.config(state ='disabled')
 
 
 def stopTime():     #stopping clock
@@ -94,6 +102,10 @@ def resetTime():    #resetting clock
     running = False
     time1 = '{:02d}:{:02d}'.format(minute, seconds)
     timeLeft.config(text = time1)
+    startButton.config(state = 'normal')
+    stopButton.config(state = 'disabled')
+    resetButton.config(state = 'normal')
+    submitButton.config(state = 'normal')
 
 # Define the rest of the GUI
 
